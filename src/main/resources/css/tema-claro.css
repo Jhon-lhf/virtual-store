@@ -1,0 +1,29 @@
+/* ============================================================
+   Tema claro — Tienda Virtual
+   Paleta tomada de los mockups del prototipo (Figma).
+   Define los "looked-up colors" que consume estilos.css.
+   ============================================================ */
+
+.root {
+    -color-fondo: #F1F5F9;
+    -color-superficie: #FFFFFF;
+    -color-superficie-alt: #F8FAFC;
+
+    -color-acento: #2563EB;
+    -color-acento-oscuro: #1E40AF;
+    -color-acento-suave: #EFF6FF;
+
+    -color-texto: #0F172A;
+    -color-texto-apagado: #64748B;
+    -color-borde: #E2E8F0;
+
+    -color-exito: #15803D;
+    -color-exito-fondo: #F0FDF4;
+    -color-alerta: #B45309;
+    -color-alerta-fondo: #FFFBEB;
+    -color-peligro: #B91C1C;
+    -color-peligro-fondo: #FEF2F2;
+
+    -color-sombra: rgba(15, 23, 42, 0.08);
+    -color-sombra-fuerte: rgba(15, 23, 42, 0.16);
+}

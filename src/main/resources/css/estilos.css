@@ -1,0 +1,457 @@
+/* ============================================================
+   estilos.css — Sistema de diseño de Tienda Virtual (JavaFX)
+   Todos los colores provienen de "looked-up colors" definidos en
+   tema-claro.css / tema-oscuro.css, así que este archivo no cambia
+   al alternar el tema.
+   ============================================================ */
+
+/* ---------------------------------------------------------- base */
+
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-background-color: -color-fondo;
+}
+
+.label {
+    -fx-text-fill: -color-texto;
+}
+
+.texto-apagado {
+    -fx-text-fill: -color-texto-apagado;
+}
+
+.texto-error {
+    -fx-text-fill: -color-peligro;
+    -fx-font-weight: bold;
+}
+
+.hint {
+    -fx-font-size: 11px;
+    -fx-text-fill: -color-texto-apagado;
+}
+
+.etiqueta {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-texto-apagado;
+}
+
+/* ---------------------------------------------------------- paneles */
+
+.panel {
+    -fx-background-color: -color-superficie;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: -color-borde;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, -color-sombra, 8, 0.15, 0, 2);
+}
+
+.titulo-panel {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.titulo-modulo {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.icono-modulo {
+    -fx-font-size: 34px;
+}
+
+.fondo-login {
+    -fx-background-color: -color-fondo;
+}
+
+.panel-demo {
+    -fx-background-color: -color-superficie-alt;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: -color-borde;
+    -fx-border-width: 1;
+    -fx-padding: 12;
+    -fx-alignment: center;
+}
+
+/* ---------------------------------------------------------- botones */
+
+.btn {
+    -fx-background-color: -color-superficie;
+    -fx-background-insets: 0;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: -color-borde;
+    -fx-border-width: 1;
+    -fx-text-fill: -color-texto;
+    -fx-cursor: hand;
+    -fx-padding: 8 14 8 14;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+.btn:hover {
+    -fx-background-color: -color-superficie-alt;
+    -fx-border-color: -color-texto-apagado;
+}
+
+.btn:pressed {
+    -fx-background-color: -color-borde;
+}
+
+.btn:disabled {
+    -fx-opacity: 0.45;
+    -fx-cursor: default;
+}
+
+.btn-primario {
+    -fx-background-color: -color-acento;
+    -fx-border-color: -color-acento-oscuro;
+    -fx-text-fill: white;
+}
+
+.btn-primario:hover {
+    -fx-background-color: -color-acento-oscuro;
+    -fx-border-color: -color-acento-oscuro;
+}
+
+.btn-primario:pressed {
+    -fx-background-color: derive(-color-acento-oscuro, -15%);
+}
+
+.chip-cuenta {
+    -fx-background-color: -color-acento-suave;
+    -fx-background-insets: 0;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-border-color: transparent;
+    -fx-text-fill: -color-acento-oscuro;
+    -fx-cursor: hand;
+    -fx-padding: 4 12 4 12;
+    -fx-font-weight: bold;
+}
+
+.chip-cuenta:hover {
+    -fx-background-color: derive(-color-acento-suave, -6%);
+}
+
+/* ---------------------------------------------------------- cabecera */
+
+.cabecera {
+    -fx-background-color: -color-superficie;
+    -fx-border-color: transparent transparent -color-borde transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-min-height: 60;
+    -fx-padding: 10 20 10 20;
+}
+
+.marca-logo {
+    -fx-background-color: linear-gradient(to bottom right, -color-acento, derive(-color-acento, 25%));
+    -fx-background-radius: 8;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-pref-width: 32;
+    -fx-pref-height: 32;
+    -fx-alignment: center;
+}
+
+.marca-logo .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}
+
+.marca {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.marca-grande {
+    -fx-font-size: 21px;
+    -fx-font-weight: bold;
+}
+
+.avatar {
+    -fx-background-color: -color-acento;
+    -fx-background-radius: 999;
+    -fx-min-width: 28;
+    -fx-min-height: 28;
+    -fx-pref-width: 28;
+    -fx-pref-height: 28;
+    -fx-alignment: center;
+}
+
+.avatar .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.chip-sesion {
+    -fx-text-fill: -color-texto-apagado;
+    -fx-font-size: 12px;
+}
+
+/* ---------------------------------------------------------- pestañas */
+
+.barra-pestanas {
+    -fx-background-color: -color-superficie;
+    -fx-border-color: transparent transparent -color-borde transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 20 0 20;
+}
+
+.pestana {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-border-width: 0 0 2 0;
+    -fx-text-fill: -color-texto-apagado;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 13 16 13 16;
+}
+
+.pestana:hover {
+    -fx-text-fill: -color-texto;
+    -fx-background-color: derive(-color-superficie, -4%);
+}
+
+.pestana-activa {
+    -fx-text-fill: -color-acento;
+    -fx-border-color: transparent transparent -color-acento transparent;
+}
+
+.pestana-pronta {
+    -fx-opacity: 0.65;
+}
+
+/* ---------------------------------------------------------- campos */
+
+.campo,
+.text-field.campo,
+.password-field.campo {
+    -fx-background-color: -color-superficie;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: -color-borde;
+    -fx-text-fill: -color-texto;
+    -fx-prompt-text-fill: derive(-color-texto-apagado, 25%);
+    -fx-padding: 8 12 8 12;
+}
+
+.campo:focused {
+    -fx-border-color: -color-acento;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.25), 6, 0.1, 0, 0);
+}
+
+.combo-box.campo {
+    -fx-background-color: -color-superficie;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: -color-borde;
+    -fx-padding: 2 6 2 6;
+}
+
+.combo-box.campo:focused {
+    -fx-border-color: -color-acento;
+}
+
+.combo-box.campo .list-cell {
+    -fx-text-fill: -color-texto;
+    -fx-background-color: transparent;
+}
+
+.combo-box.campo .arrow {
+    -fx-background-color: -color-texto-apagado;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -color-superficie;
+    -fx-border-color: -color-borde;
+    -fx-border-width: 1;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, -color-sombra-fuerte, 12, 0.2, 0, 4);
+}
+
+.combo-box-popup .list-cell {
+    -fx-text-fill: -color-texto;
+    -fx-padding: 6 12 6 12;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: -color-acento-suave;
+}
+
+/* ---------------------------------------------------------- chips */
+
+.chip {
+    -fx-background-color: -color-acento-suave;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-text-fill: -color-acento-oscuro;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 9 3 9;
+    -fx-alignment: center;
+}
+
+.chip-exito {
+    -fx-background-color: -color-exito-fondo;
+    -fx-text-fill: -color-exito;
+}
+
+.chip-alerta {
+    -fx-background-color: -color-alerta-fondo;
+    -fx-text-fill: -color-alerta;
+}
+
+.chip-peligro {
+    -fx-background-color: -color-peligro-fondo;
+    -fx-text-fill: -color-peligro;
+}
+
+/* ---------------------------------------------------------- catálogo */
+
+.barra-filtros {
+    -fx-padding: 12 16 12 16;
+}
+
+.zona-scroll,
+.zona-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.tarjeta-producto {
+    -fx-background-color: -color-superficie;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: -color-borde;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, -color-sombra, 6, 0.15, 0, 2);
+    -fx-cursor: hand;
+}
+
+.tarjeta-producto:hover {
+    -fx-border-color: -color-acento;
+    -fx-effect: dropshadow(gaussian, -color-sombra-fuerte, 14, 0.2, 0, 4);
+}
+
+.tarjeta-producto:pressed {
+    -fx-translate-y: 1;
+}
+
+.area-imagen {
+    -fx-background-radius: 12 12 0 0;
+    -fx-alignment: center;
+}
+
+.icono-imagen {
+    -fx-font-size: 40px;
+}
+
+.titulo-producto {
+    -fx-font-weight: bold;
+    -fx-font-size: 13.5px;
+}
+
+.rating {
+    -fx-text-fill: -color-alerta;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.precio {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.estado-vacio {
+    -fx-alignment: center;
+}
+
+/* ---------------------------------------------------------- paginador */
+
+.btn-paginador {
+    -fx-padding: 4 10 4 10;
+    -fx-min-width: 30;
+}
+
+.btn-paginador-activa {
+    -fx-background-color: -color-acento;
+    -fx-border-color: -color-acento-oscuro;
+    -fx-text-fill: white;
+}
+
+.btn-paginador-activa:hover {
+    -fx-background-color: -color-acento-oscuro;
+}
+
+/* ---------------------------------------------------------- toasts */
+
+.toast {
+    -fx-background-color: -color-superficie;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: -color-borde;
+    -fx-border-width: 1;
+    -fx-text-fill: -color-texto;
+    -fx-font-weight: bold;
+    -fx-padding: 10 18 10 18;
+    -fx-effect: dropshadow(gaussian, -color-sombra-fuerte, 16, 0.2, 0, 4);
+}
+
+.toast-info {
+    -fx-border-color: -color-acento;
+}
+
+.toast-exito {
+    -fx-border-color: -color-exito;
+}
+
+.toast-alerta {
+    -fx-border-color: -color-alerta;
+}
+
+.toast-error {
+    -fx-border-color: -color-peligro;
+}
+
+/* ---------------------------------------------------------- scrollbars */
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: -color-borde;
+    -fx-background-radius: 999;
+    -fx-background-insets: 3;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: -color-texto-apagado;
+}
+
+.scroll-bar .track,
+.scroll-bar .decrement-button,
+.scroll-bar .increment-button,
+.scroll-bar .decrement-arrow,
+.scroll-bar .increment-arrow {
+    -fx-background-color: transparent;
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+/* ---------------------------------------------------------- tooltips */
+
+.tooltip {
+    -fx-background-color: -color-texto;
+    -fx-text-fill: -color-fondo;
+    -fx-background-radius: 6;
+    -fx-padding: 6 10 6 10;
+    -fx-font-size: 12px;
+}

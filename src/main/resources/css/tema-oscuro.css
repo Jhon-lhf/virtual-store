@@ -1,0 +1,29 @@
+/* ============================================================
+   Tema oscuro — Tienda Virtual
+   Mismos "looked-up colors" que el tema claro, en versión oscura.
+   El cambio de tema solo reemplaza esta hoja de estilos.
+   ============================================================ */
+
+.root {
+    -color-fondo: #0F172A;
+    -color-superficie: #1E293B;
+    -color-superficie-alt: #26334A;
+
+    -color-acento: #3B82F6;
+    -color-acento-oscuro: #2563EB;
+    -color-acento-suave: #1E3A8A;
+
+    -color-texto: #E2E8F0;
+    -color-texto-apagado: #94A3B8;
+    -color-borde: #334155;
+
+    -color-exito: #34D399;
+    -color-exito-fondo: rgba(16, 185, 129, 0.15);
+    -color-alerta: #FBBF24;
+    -color-alerta-fondo: rgba(245, 158, 11, 0.15);
+    -color-peligro: #F87171;
+    -color-peligro-fondo: rgba(239, 68, 68, 0.15);
+
+    -color-sombra: rgba(0, 0, 0, 0.35);
+    -color-sombra-fuerte: rgba(0, 0, 0, 0.5);
+}
