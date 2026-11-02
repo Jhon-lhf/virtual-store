@@ -227,7 +227,7 @@ public class VistaCatalogo {
         tarjeta.setPrefWidth(1200);
         tarjeta.setAlignment(Pos.CENTER);
         tarjeta.setPadding(new Insets(48));
-        Label icono = new Label("🔍");
+        Icono icono = new Icono(Iconos.BUSQUEDA, 36);
         icono.getStyleClass().add("icono-modulo");
         Label titulo = new Label("Sin resultados");
         titulo.getStyleClass().add("titulo-modulo");

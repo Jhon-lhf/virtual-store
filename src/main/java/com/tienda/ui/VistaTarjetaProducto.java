@@ -11,6 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Tarjeta de producto para la cuadrícula del catálogo: área de imagen
@@ -28,6 +29,13 @@ public class VistaTarjetaProducto extends VBox {
             "linear-gradient(to bottom right, #E0E7FF, #C7D2FE)"
     };
 
+    /** Icono vectorial de cada categoría (ver {@link Iconos}); genérico = bolsa. */
+    private static final Map<String, String> ICONOS_CATEGORIA = Map.of(
+            "Tecnologia", Iconos.COMPUTADORA,
+            "Ropa", Iconos.CAMISA,
+            "Hogar", Iconos.CASA,
+            "Libros", Iconos.LIBRO);
+
     private final Producto producto;
 
     public VistaTarjetaProducto(Producto producto, String nombreCategoria, Runnable alHacerClic) {
@@ -37,7 +45,7 @@ public class VistaTarjetaProducto extends VBox {
         setOnMouseClicked(e -> alHacerClic.run());
 
         // --- Área de imagen (gradiente + ícono de la categoría) ---
-        Label icono = new Label(iconoDe(nombreCategoria));
+        Icono icono = new Icono(iconoDe(nombreCategoria), 44);
         icono.getStyleClass().add("icono-imagen");
         StackPane areaImagen = new StackPane(icono);
         areaImagen.getStyleClass().add("area-imagen");
@@ -101,14 +109,7 @@ public class VistaTarjetaProducto extends VBox {
     }
 
     private String iconoDe(String nombreCategoria) {
-        return switch (nombreCategoria == null ? "" : nombreCategoria) {
-            case "Tecnologia" -> "💻";
-            case "Ropa" -> "👕";
-            case "Hogar" -> "🛋️";
-            case "Libros" -> "📚";
-            case "Juguetes" -> "🧸";
-            default -> "🛍️";
-        };
+        return ICONOS_CATEGORIA.getOrDefault(nombreCategoria, Iconos.BOLSA);
     }
 
     private String gradienteDe(String nombreCategoria) {

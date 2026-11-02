@@ -58,12 +58,7 @@
     -fx-font-weight: bold;
 }
 
-.icono-modulo {
-    -fx-font-size: 34px;
-}
-
-.fondo-login {
-    -fx-background-color: -color-fondo;
+.fondo-login {    -fx-background-color: -color-fondo;
 }
 
 .panel-demo {
@@ -194,38 +189,88 @@
     -fx-font-size: 12px;
 }
 
-/* ---------------------------------------------------------- pestañas */
+/* ---------------------------------------------------------- iconos */
 
-.barra-pestanas {
-    -fx-background-color: -color-superficie;
-    -fx-border-color: transparent transparent -color-borde transparent;
-    -fx-border-width: 0 0 1 0;
-    -fx-padding: 0 20 0 20;
+/* Los iconos son Region con -fx-shape; el color va por -fx-background-color
+   y así siguen al tema claro/oscuro sin tocar código. */
+
+.icono {
+    -fx-background-color: -color-texto-apagado;
 }
 
-.pestana {
+.icono-modulo {
+    -fx-background-color: -color-texto-apagado;
+}
+
+.icono-imagen {
+    -fx-background-color: #334155;
+}
+
+/* ---------------------------------------------------------- barra lateral */
+
+.barra-lateral {
+    -fx-background-color: -color-superficie;
+    -fx-border-color: transparent -color-borde transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.marca-fila {
+    -fx-padding: 0 4 0 4;
+}
+
+.linea-separador {
+    -fx-background-color: -color-borde;
+    -fx-min-height: 1;
+    -fx-max-height: 1;
+}
+
+.nav-boton {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
-    -fx-border-color: transparent transparent transparent transparent;
-    -fx-border-width: 0 0 2 0;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: transparent;
     -fx-text-fill: -color-texto-apagado;
     -fx-font-weight: bold;
     -fx-cursor: hand;
-    -fx-padding: 13 16 13 16;
+    -fx-padding: 10 12 10 12;
+    -fx-alignment: baseline-left;
+    -fx-graphic-text-gap: 12;
 }
 
-.pestana:hover {
+.nav-boton:hover {
+    -fx-background-color: -color-superficie-alt;
     -fx-text-fill: -color-texto;
-    -fx-background-color: derive(-color-superficie, -4%);
 }
 
-.pestana-activa {
-    -fx-text-fill: -color-acento;
-    -fx-border-color: transparent transparent -color-acento transparent;
+.nav-boton:hover .icono {
+    -fx-background-color: -color-texto;
 }
 
-.pestana-pronta {
-    -fx-opacity: 0.65;
+.nav-boton-activa {
+    -fx-background-color: -color-acento-suave;
+    -fx-text-fill: -color-acento-oscuro;
+}
+
+.nav-boton-activa .icono {
+    -fx-background-color: -color-acento;
+}
+
+.nav-boton-pronta {
+    -fx-opacity: 0.6;
+}
+
+.nav-boton-salir {
+    -fx-text-fill: -color-peligro;
+}
+
+.nav-boton-salir .icono {
+    -fx-background-color: -color-peligro;
+}
+
+.nombre-sesion {
+    -fx-font-weight: bold;
+    -fx-font-size: 12.5px;
 }
 
 /* ---------------------------------------------------------- campos */
@@ -347,10 +392,6 @@
 .area-imagen {
     -fx-background-radius: 12 12 0 0;
     -fx-alignment: center;
-}
-
-.icono-imagen {
-    -fx-font-size: 40px;
 }
 
 .titulo-producto {

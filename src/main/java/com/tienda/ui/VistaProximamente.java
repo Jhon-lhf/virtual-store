@@ -18,14 +18,14 @@ public class VistaProximamente {
 
     private final StackPane raiz = new StackPane();
 
-    public VistaProximamente(String icono, String titulo, String descripcion, List<String> puntos) {
+    public VistaProximamente(String rutaIcono, String titulo, String descripcion, List<String> puntos) {
         VBox tarjeta = new VBox(12);
         tarjeta.getStyleClass().add("panel");
         tarjeta.setMaxWidth(560);
         tarjeta.setPadding(new Insets(30));
         tarjeta.setAlignment(Pos.CENTER_LEFT);
 
-        Label iconoGrande = new Label(icono);
+        Icono iconoGrande = new Icono(rutaIcono, 36);
         iconoGrande.getStyleClass().add("icono-modulo");
         Label tituloModulo = new Label(titulo);
         tituloModulo.getStyleClass().add("titulo-modulo");
