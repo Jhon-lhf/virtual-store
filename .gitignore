@@ -40,3 +40,7 @@ build/
 
 ### Datos de la aplicación (archivos JSON de runtime) ###
 data/
+
+### Contexto local del agente (no van al repositorio) ###
+AGENTS.md
+MEMORY.md
