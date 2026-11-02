@@ -34,10 +34,6 @@ public class AppTienda extends Application {
                 new ServicioCategorias(repoCategorias, repoSolicitudes, repoProductos));
 
         escenario.setTitle("Tienda Virtual");
-        escenario.setMinWidth(1080);
-        escenario.setMinHeight(680);
-        escenario.setWidth(1280);
-        escenario.setHeight(820);
 
         app.mostrarLogin();
         escenario.show();

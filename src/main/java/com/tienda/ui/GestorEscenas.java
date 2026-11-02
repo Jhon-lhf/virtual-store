@@ -6,6 +6,7 @@ import com.tienda.servicio.ServicioCategorias;
 import com.tienda.servicio.ServicioProductos;
 import com.tienda.servicio.SesionActual;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -35,16 +36,20 @@ public class GestorEscenas {
         this.servicioCategorias = servicioCategorias;
     }
 
-    /** Muestra la pantalla de inicio de sesión. */
+    /** Muestra la pantalla de inicio de sesión, en una ventana compacta no redimensionable. */
     public void mostrarLogin() {
         VistaLogin vista = new VistaLogin(this);
         Scene escena = new Scene(vista.getRaiz());
         aplicarEstilos(escena);
         escenario.setScene(escena);
         escenario.setTitle("Tienda Virtual — Iniciar sesión");
+        // El shell principal deja mínimos de 960x640; hay que liberarlos para la ventana compacta.
+        escenario.setMinWidth(0);
+        escenario.setMinHeight(0);
+        ajustarVentana(480, 700, false);
     }
 
-    /** Muestra el shell principal con las pestañas del rol en sesión. */
+    /** Muestra el shell principal con la navegación lateral del rol en sesión. */
     public void mostrarPrincipal() {
         VistaPrincipal vista = new VistaPrincipal(this);
         Scene escena = new Scene(vista.getRaiz());
@@ -52,6 +57,22 @@ public class GestorEscenas {
         escenario.setScene(escena);
         Usuario usuario = sesion.getUsuario();
         escenario.setTitle("Tienda Virtual — " + usuario.getNombre());
+        escenario.setMinWidth(960);
+        escenario.setMinHeight(640);
+        ajustarVentana(1280, 820, true);
+    }
+
+    /**
+     * Dimensiona la ventana sin desbordar la pantalla: en monitores pequeños
+     * (por ejemplo 1366x768) una ventana fija de 1280x820 queda cortada por
+     * la barra de tareas, así que se limita al 90% del área visible.
+     */
+    private void ajustarVentana(double ancho, double alto, boolean redimensionable) {
+        var limites = Screen.getPrimary().getVisualBounds();
+        escenario.setResizable(redimensionable);
+        escenario.setWidth(Math.min(ancho, limites.getWidth() * 0.9));
+        escenario.setHeight(Math.min(alto, limites.getHeight() * 0.9));
+        escenario.centerOnScreen();
     }
 
     /** Cierra la sesión actual y vuelve al login. */
