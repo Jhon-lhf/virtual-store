@@ -36,6 +36,11 @@ public class VistaTarjetaProducto extends VBox {
             "Hogar", Iconos.CASA,
             "Libros", Iconos.LIBRO);
 
+    /** Público: el detalle y el carrito reutilizan el icono por categoría. */
+    public static String iconoDe(String nombreCategoria) {
+        return ICONOS_CATEGORIA.getOrDefault(nombreCategoria, Iconos.BOLSA);
+    }
+
     private final Producto producto;
 
     public VistaTarjetaProducto(Producto producto, String nombreCategoria, Runnable alHacerClic) {
@@ -108,11 +113,8 @@ public class VistaTarjetaProducto extends VBox {
         return String.format(Locale.US, "$%,.2f", precio);
     }
 
-    private String iconoDe(String nombreCategoria) {
-        return ICONOS_CATEGORIA.getOrDefault(nombreCategoria, Iconos.BOLSA);
-    }
-
-    private String gradienteDe(String nombreCategoria) {
+    /** Público: el detalle y el carrito reutilizan el gradiente por categoría. */
+    public static String gradienteDe(String nombreCategoria) {
         int indice = nombreCategoria == null
                 ? 0
                 : Math.abs(nombreCategoria.hashCode()) % GRADIENTES.length;

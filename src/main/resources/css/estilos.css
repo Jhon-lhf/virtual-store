@@ -273,6 +273,141 @@
     -fx-font-size: 12.5px;
 }
 
+/* ---------------------------------------------------------- ruta y módulos del cliente */
+
+.barra-ruta {
+    -fx-background-color: -color-superficie;
+    -fx-border-color: transparent transparent -color-borde transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 7 24 7 24;
+    -fx-min-height: 44;
+}
+
+.btn-icono {
+    -fx-padding: 6 8 6 8;
+    -fx-min-width: 0;
+}
+
+.detalle-imagen {
+    -fx-background-radius: 12;
+    -fx-min-width: 280;
+    -fx-min-height: 220;
+    -fx-max-width: 280;
+    -fx-max-height: 220;
+    -fx-alignment: center;
+}
+
+.panel-detalle {
+    -fx-alignment: center-left;
+}
+
+.titulo-detalle {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.precio-grande {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+.estrellas {
+    -fx-text-fill: -color-alerta;
+    -fx-font-weight: bold;
+}
+
+.cantidad-elegida {
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+.btn-cantidad {
+    -fx-min-width: 34;
+    -fx-padding: 8 0 8 0;
+}
+
+.btn-deseo-activo {
+    -fx-text-fill: -color-peligro;
+    -fx-border-color: -color-peligro;
+}
+
+.btn-deseo-activo .icono {
+    -fx-background-color: -color-peligro;
+}
+
+.fila-lista {
+    -fx-background-color: -color-superficie;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: -color-borde;
+    -fx-border-width: 1;
+    -fx-padding: 10 14 10 14;
+}
+
+.mini-imagen {
+    -fx-background-radius: 8;
+    -fx-min-width: 48;
+    -fx-min-height: 48;
+    -fx-max-width: 48;
+    -fx-max-height: 48;
+    -fx-alignment: center;
+}
+
+.btn-quitar {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-padding: 6;
+    -fx-cursor: hand;
+}
+
+.btn-quitar .icono {
+    -fx-background-color: -color-texto-apagado;
+}
+
+.btn-quitar:hover .icono {
+    -fx-background-color: -color-peligro;
+}
+
+.panel-resumen {
+    -fx-min-width: 280;
+    -fx-max-width: 280;
+    -fx-alignment: top-left;
+}
+
+.fila-total {
+    -fx-alignment: center-left;
+}
+
+.total-grande {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.fila-resena {
+    -fx-padding: 4 0 4 0;
+}
+
+.campo-texto,
+.text-area.campo-texto {
+    -fx-background-color: -color-superficie;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: -color-borde;
+    -fx-text-fill: -color-texto;
+    -fx-prompt-text-fill: derive(-color-texto-apagado, 25%);
+    -fx-padding: 4;
+    -fx-wrap-text: true;
+}
+
+.campo-texto .content {
+    -fx-background-color: transparent;
+}
+
+.campo-texto:focused {
+    -fx-border-color: -color-acento;
+}
+
 /* ---------------------------------------------------------- campos */
 
 .campo,
