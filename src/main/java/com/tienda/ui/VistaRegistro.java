@@ -19,6 +19,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.function.Consumer;
+
 /**
  * Diálogo modal de creación de cuenta. El rol elegible es solo
  * {@code CLIENTE} o {@code VENDEDOR}: nadie se autoproclama administrador
@@ -27,7 +29,7 @@ import javafx.stage.Stage;
 public class VistaRegistro {
 
     private final GestorEscenas app;
-    private final Runnable alExito;
+    private final Consumer<String> alExito;
     private final Stage dialogo = new Stage();
     private final TextField campoUsuario = new TextField();
     private final PasswordField campoClave = new PasswordField();
@@ -36,7 +38,7 @@ public class VistaRegistro {
     private final ComboBox<String> comboRol = new ComboBox<>();
     private final Label etiquetaError = new Label();
 
-    public VistaRegistro(GestorEscenas app, Runnable alExito) {
+    public VistaRegistro(GestorEscenas app, Consumer<String> alExito) {
         this.app = app;
         this.alExito = alExito;
         construir();
@@ -140,7 +142,7 @@ public class VistaRegistro {
                     campoCorreo.getText(),
                     rol));
             dialogo.close();
-            alExito.run();
+            alExito.accept(campoUsuario.getText().trim());
         } catch (ExcepcionNegocio e) {
             etiquetaError.setText(e.getMessage());
             etiquetaError.setVisible(true);

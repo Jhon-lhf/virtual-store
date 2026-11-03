@@ -26,6 +26,8 @@ public class VistaLogin {
 
     private final GestorEscenas app;
     private final StackPane raiz = new StackPane();
+    /** Capa superpuesta solo para toasts: nunca mezclada con el contenido. */
+    private final StackPane capaAvisos = new StackPane();
     private final TextField campoUsuario = new TextField();
     private final PasswordField campoClave = new PasswordField();
     private final Label etiquetaError = new Label();
@@ -121,7 +123,8 @@ public class VistaLogin {
         demo.getChildren().addAll(tituloDemo, chips, pistaDemo);
 
         tarjeta.getChildren().addAll(marca, formulario, etiquetaError, btnEntrar, btnRegistrar, demo);
-        raiz.getChildren().add(tarjeta);
+        raiz.getChildren().addAll(tarjeta, capaAvisos);
+        capaAvisos.setMouseTransparent(true);
     }
 
     private StackPane crearLogo() {
@@ -144,8 +147,13 @@ public class VistaLogin {
     }
 
     private void abrirRegistro() {
-        VistaRegistro dialogo = new VistaRegistro(app, () ->
-                Avisos.mostrar(raiz, Avisos.Tipo.EXITO, "¡Cuenta creada! Ahora inicia sesión"));
+        VistaRegistro dialogo = new VistaRegistro(app, usuarioNuevo -> {
+            // Autocompleta el usuario recién creado para que solo falte la clave.
+            campoUsuario.setText(usuarioNuevo);
+            campoClave.clear();
+            campoClave.requestFocus();
+            Avisos.mostrar(capaAvisos, Avisos.Tipo.EXITO, "¡Cuenta creada! Ahora inicia sesión");
+        });
         dialogo.mostrar();
     }
 }
