@@ -3,7 +3,11 @@ package com.tienda.ui;
 import com.tienda.modelo.Usuario;
 import com.tienda.servicio.ServicioAuth;
 import com.tienda.servicio.ServicioCategorias;
+import com.tienda.servicio.ServicioCarrito;
+import com.tienda.servicio.ServicioDeseos;
+import com.tienda.servicio.ServicioPedidos;
 import com.tienda.servicio.ServicioProductos;
+import com.tienda.servicio.ServicioResenas;
 import com.tienda.servicio.SesionActual;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
@@ -22,18 +26,33 @@ public class GestorEscenas {
     private static final String CSS_OSCURO = "/css/tema-oscuro.css";
 
     private final Stage escenario;
+    private final SesionActual sesion;
     private final ServicioAuth servicioAuth;
     private final ServicioProductos servicioProductos;
     private final ServicioCategorias servicioCategorias;
-    private final SesionActual sesion = new SesionActual();
+    private final ServicioCarrito servicioCarrito;
+    private final ServicioPedidos servicioPedidos;
+    private final ServicioResenas servicioResenas;
+    private final ServicioDeseos servicioDeseos;
     private boolean temaOscuro = false;
 
-    public GestorEscenas(Stage escenario, ServicioAuth servicioAuth,
-                         ServicioProductos servicioProductos, ServicioCategorias servicioCategorias) {
+    public GestorEscenas(Stage escenario, SesionActual sesion,
+                         ServicioAuth servicioAuth,
+                         ServicioProductos servicioProductos,
+                         ServicioCategorias servicioCategorias,
+                         ServicioCarrito servicioCarrito,
+                         ServicioPedidos servicioPedidos,
+                         ServicioResenas servicioResenas,
+                         ServicioDeseos servicioDeseos) {
         this.escenario = escenario;
+        this.sesion = sesion;
         this.servicioAuth = servicioAuth;
         this.servicioProductos = servicioProductos;
         this.servicioCategorias = servicioCategorias;
+        this.servicioCarrito = servicioCarrito;
+        this.servicioPedidos = servicioPedidos;
+        this.servicioResenas = servicioResenas;
+        this.servicioDeseos = servicioDeseos;
     }
 
     /** Muestra la pantalla de inicio de sesión, en una ventana compacta no redimensionable. */
@@ -51,6 +70,8 @@ public class GestorEscenas {
 
     /** Muestra el shell principal con la navegación lateral del rol en sesión. */
     public void mostrarPrincipal() {
+        // Sesión nueva: carrito e historial de deshacer parten de cero.
+        servicioCarrito.reiniciar();
         VistaPrincipal vista = new VistaPrincipal(this);
         Scene escena = new Scene(vista.getRaiz());
         aplicarEstilos(escena);
@@ -113,6 +134,22 @@ public class GestorEscenas {
 
     public ServicioCategorias getServicioCategorias() {
         return servicioCategorias;
+    }
+
+    public ServicioCarrito getServicioCarrito() {
+        return servicioCarrito;
+    }
+
+    public ServicioPedidos getServicioPedidos() {
+        return servicioPedidos;
+    }
+
+    public ServicioResenas getServicioResenas() {
+        return servicioResenas;
+    }
+
+    public ServicioDeseos getServicioDeseos() {
+        return servicioDeseos;
     }
 
     public SesionActual getSesion() {

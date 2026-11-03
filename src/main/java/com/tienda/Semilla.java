@@ -1,17 +1,22 @@
 package com.tienda;
 
 import com.tienda.modelo.Categoria;
+import com.tienda.modelo.Deseos;
 import com.tienda.modelo.OrigenCategoria;
 import com.tienda.modelo.Producto;
+import com.tienda.modelo.Resena;
 import com.tienda.modelo.Usuario;
 import com.tienda.persistencia.RepositorioCategorias;
+import com.tienda.persistencia.RepositorioDeseos;
 import com.tienda.persistencia.RepositorioProductos;
 import com.tienda.persistencia.RepositorioUsuarios;
 import com.tienda.util.GeneradorId;
 import com.tienda.util.HashClave;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,7 +34,8 @@ public final class Semilla {
 
     public static void ejecutarSiNecesario(RepositorioUsuarios repoUsuarios,
                                            RepositorioProductos repoProductos,
-                                           RepositorioCategorias repoCategorias) {
+                                           RepositorioCategorias repoCategorias,
+                                           RepositorioDeseos repoDeseos) {
         if (!repoUsuarios.leerTodos().isEmpty()) {
             return;
         }
@@ -56,6 +62,8 @@ public final class Semilla {
                 "vendedor@tienda.com", com.tienda.modelo.Rol.VENDEDOR, true));
 
         String idVendedor = repoUsuarios.buscarPorNombreUsuario("vendedor").orElseThrow().getId();
+        String idCliente = repoUsuarios.buscarPorNombreUsuario("cliente").orElseThrow().getId();
+        String idAdmin = repoUsuarios.buscarPorNombreUsuario("admin").orElseThrow().getId();
 
         // --- Productos demo (12, coherentes con los mockups del prototipo) ---
         Object[][] productos = {
@@ -72,8 +80,9 @@ public final class Semilla {
                 {"El Alquimista (bolsillo)", "Novela de Paulo Coelho.", 14.99, 25, "Libros"},
                 {"Código Limpio", "Manual de artesanía del software.", 39.90, 3, "Libros"}
         };
+        List<String> idsProductos = new ArrayList<>();
         for (Object[] fila : productos) {
-            repoProductos.guardar(new Producto(
+            Producto producto = new Producto(
                     GeneradorId.generar("P"),
                     (String) fila[0],
                     (String) fila[1],
@@ -81,7 +90,34 @@ public final class Semilla {
                     (Integer) fila[3],
                     idsCategorias.get(fila[4]),
                     idVendedor,
-                    hoy));
+                    hoy);
+            repoProductos.guardar(producto);
+            idsProductos.add(producto.getId());
         }
+
+        // --- Reseñas demo (embebidas en los productos; una por autor) ---
+        resenar(repoProductos, idsProductos.get(0), idCliente, "Cliente Demo", 5,
+                "La mejor compra que he hecho este año, llegó rápido y funciona perfecto.", hoy);
+        resenar(repoProductos, idsProductos.get(2), idCliente, "Cliente Demo", 4,
+                "Muy cómodos y la batería dura lo prometido.", hoy);
+        resenar(repoProductos, idsProductos.get(7), idAdmin, "Administrador Demo", 5,
+                "El espresso sale con buen cuerpo. Recomendada.", hoy);
+        resenar(repoProductos, idsProductos.get(11), idCliente, "Cliente Demo", 5,
+                "Lectura obligatoria para quien programa en equipo.", hoy);
+
+        // --- Lista de deseos demo del cliente ---
+        Deseos deseos = new Deseos(idCliente);
+        deseos.agregar(idsProductos.get(3));
+        deseos.agregar(idsProductos.get(9));
+        repoDeseos.guardar(deseos);
+    }
+
+    /** Agrega una reseña al producto indicado y lo persiste. */
+    private static void resenar(RepositorioProductos repoProductos, String productoId,
+                                String autorId, String autorNombre, int calificacion,
+                                String comentario, String fecha) {
+        Producto producto = repoProductos.buscarPorId(productoId).orElseThrow();
+        producto.getResenas().add(new Resena(autorId, autorNombre, calificacion, comentario, fecha));
+        repoProductos.guardar(producto);
     }
 }

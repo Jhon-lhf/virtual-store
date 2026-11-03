@@ -2,6 +2,7 @@ package com.tienda.ui;
 
 import com.tienda.modelo.Rol;
 import com.tienda.modelo.Usuario;
+import com.tienda.estructuras.PilaNavegacion;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -23,9 +24,12 @@ import java.util.Map;
 /**
  * Shell principal con navegación lateral, patrón idiomático de las apps de
  * escritorio: la barra lateral concentra marca, módulos del rol, tema y
- * sesión, y libera todo el alto de la ventana para el contenido. Solo el
- * Catálogo está operativo en el hito 1; el resto de módulos muestra una
- * vista "próximamente" que documenta lo planeado.
+ * sesión, y el contenido navega con una pila de rutas ({@link PilaNavegacion})
+ * que da los botones atrás/adelante del detalle de producto.
+ *
+ * <p>Los módulos del cliente (catálogo, carrito, deseos, pedidos) están
+ * operativos; los del vendedor y el admin muestran una vista "próximamente"
+ * que documenta lo planeado.</p>
  */
 public class VistaPrincipal {
 
@@ -36,9 +40,9 @@ public class VistaPrincipal {
     private static final Map<Rol, List<Pestana>> PESTANAS_POR_ROL = Map.of(
             Rol.CLIENTE, List.of(
                     new Pestana("catalogo", "Catálogo", true),
-                    new Pestana("carrito", "Carrito", false),
-                    new Pestana("deseos", "Deseos", false),
-                    new Pestana("pedidos", "Mis pedidos", false)),
+                    new Pestana("carrito", "Carrito", true),
+                    new Pestana("deseos", "Deseos", true),
+                    new Pestana("pedidos", "Mis pedidos", true)),
             Rol.VENDEDOR, List.of(
                     new Pestana("cola", "Cola FIFO", false),
                     new Pestana("stock", "Mi stock", false),
@@ -64,15 +68,6 @@ public class VistaPrincipal {
             Map.entry("metricas", Iconos.GRAFICO));
 
     private static final Map<String, DatosModulo> MODULOS_PRONTOS = Map.of(
-            "carrito", new DatosModulo("Carrito",
-                    "Revisa tu compra antes del checkout: totales con impuesto del 19% y deshacer/rehacer con Ctrl+Z / Ctrl+Y.",
-                    List.of("Valida el stock al cambiar cantidades", "El historial de undo vive solo en la sesión")),
-            "deseos", new DatosModulo("Deseos",
-                    "Guarda productos para después sin comprometer el stock de nadie.",
-                    List.of("La lista se persiste con tu cuenta", "Mueve productos al carrito cuando quieras")),
-            "pedidos", new DatosModulo("Mis pedidos",
-                    "Sigue tus compras de punta a punta.",
-                    List.of("Estados: PENDIENTE → ENVIADO → ENTREGADO", "Factura disponible por pedido")),
             "cola", new DatosModulo("Cola de despacho (FIFO)",
                     "Atiende los pedidos en orden de llegada, sin injusticias ni \"piches\".",
                     List.of("Despachar siguiente (→ ENVIADO)", "Marcar seleccionado ENTREGADO", "La cola no se reordena a propósito")),
@@ -98,15 +93,22 @@ public class VistaPrincipal {
     private record DatosModulo(String titulo, String descripcion, List<String> puntos) {
     }
 
+    /** Prefijos de las rutas guardadas en la pila de navegación. */
+    private static final String RUTA_MODULO = "M:";
+    private static final String RUTA_DETALLE = "D:";
+
     private final GestorEscenas app;
     private final BorderPane raiz = new BorderPane();
     private final StackPane capaAvisos = new StackPane();
     private final StackPane contenido = new StackPane();
+    private final PilaNavegacion pilaRutas = new PilaNavegacion();
     private final Map<String, Node> vistasConstruidas = new HashMap<>();
     private final Map<String, Button> botonesPestana = new HashMap<>();
     private final Button btnTema = new Button();
+    private final Button btnAtras = new Button();
+    private final Button btnAdelante = new Button();
+    private final Label etiquetaRuta = new Label();
     private List<Pestana> pestanasDelRol;
-    private String pestanaActiva;
 
     public VistaPrincipal(GestorEscenas app) {
         this.app = app;
@@ -124,9 +126,14 @@ public class VistaPrincipal {
         pestanasDelRol = PESTANAS_POR_ROL.get(usuario.getRol());
 
         raiz.setLeft(barraLateral(usuario));
-        raiz.setCenter(contenido);
+        raiz.setCenter(new VBox(barraRuta(), contenido));
+        VBox.setVgrow(contenido, Priority.ALWAYS);
 
-        seleccionar(pestanasDelRol.get(0));
+        // Ruta inicial: el primer módulo del rol (sin apilar nada previo).
+        String rutaInicial = RUTA_MODULO + pestanasDelRol.get(0).id();
+        pilaRutas.visitar(rutaInicial);
+        renderizar(rutaInicial);
+        actualizarBotonesRuta();
     }
 
     // ---------------------------------------------------------------- barra lateral
@@ -165,11 +172,13 @@ public class VistaPrincipal {
             if (!pestana.disponible()) {
                 boton.getStyleClass().add("nav-boton-pronta");
                 boton.setTooltip(new Tooltip("Disponible en el próximo hito"));
+            } else {
+                boton.setOnAction(e -> navegarAModulo(pestana.id()));
             }
-            boton.setOnAction(e -> seleccionar(pestana));
             botonesPestana.put(pestana.id(), boton);
             navegacion.getChildren().add(boton);
         }
+        actualizarBadgeCarrito();
 
         // --- Zona inferior: sesión, tema y salir ---
         Region espaciador = new Region();
@@ -217,26 +226,138 @@ public class VistaPrincipal {
         btnTema.setText(app.isTemaOscuro() ? "Modo claro" : "Modo oscuro");
     }
 
-    // ---------------------------------------------------------------- selección
-
-    private void seleccionar(Pestana pestana) {
-        pestanaActiva = pestana.id();
-        botonesPestana.forEach((id, boton) ->
-                boton.getStyleClass().remove("nav-boton-activa"));
-        botonesPestana.get(pestana.id()).getStyleClass().add("nav-boton-activa");
-        contenido.getChildren().setAll(obtenerVista(pestana));
+    /** Actualiza el contador que muestra el botón Carrito (badge del carrito). */
+    public void actualizarBadgeCarrito() {
+        Button btnCarrito = botonesPestana.get("carrito");
+        if (btnCarrito == null) {
+            return;
+        }
+        int unidades = app.getServicioCarrito().cantidadItems();
+        btnCarrito.setText(unidades > 0 ? "Carrito (" + unidades + ")" : "Carrito");
     }
 
-    /** Construye (o reutiliza) la vista de un módulo; el catálogo conserva sus filtros. */
-    private Node obtenerVista(Pestana pestana) {
-        return vistasConstruidas.computeIfAbsent(pestana.id(), id -> {
-            if ("catalogo".equals(id)) {
-                return new VistaCatalogo(app, mensaje ->
-                        Avisos.mostrar(capaAvisos, Avisos.Tipo.INFO, mensaje)).getRaiz();
-            }
-            DatosModulo datos = MODULOS_PRONTOS.get(id);
-            return new VistaProximamente(ICONOS_POR_PESTANA.get(id), datos.titulo(),
-                    datos.descripcion(), datos.puntos()).getRaiz();
+    // ---------------------------------------------------------------- navegación
+
+    /** Barra fina sobre el contenido: atrás / adelante / título de la vista actual. */
+    private Node barraRuta() {
+        HBox barra = new HBox(8);
+        barra.getStyleClass().add("barra-ruta");
+        barra.setAlignment(Pos.CENTER_LEFT);
+
+        btnAtras.getStyleClass().addAll("btn", "btn-icono");
+        btnAtras.setGraphic(new Icono(Iconos.FLECHA_IZQUIERDA, 16));
+        btnAtras.setTooltip(new Tooltip("Atrás"));
+        btnAtras.setOnAction(e -> {
+            pilaRutas.irAtras().ifPresent(this::renderizar);
+            actualizarBotonesRuta();
         });
+
+        btnAdelante.getStyleClass().addAll("btn", "btn-icono");
+        btnAdelante.setGraphic(new Icono(Iconos.FLECHA_DERECHA, 16));
+        btnAdelante.setTooltip(new Tooltip("Adelante"));
+        btnAdelante.setOnAction(e -> {
+            pilaRutas.irAdelante().ifPresent(this::renderizar);
+            actualizarBotonesRuta();
+        });
+
+        etiquetaRuta.getStyleClass().add("texto-apagado");
+        Region espaciador = new Region();
+        HBox.setHgrow(espaciador, Priority.ALWAYS);
+
+        barra.getChildren().addAll(btnAtras, btnAdelante, etiquetaRuta, espaciador);
+        return barra;
+    }
+
+    private void actualizarBotonesRuta() {
+        btnAtras.setDisable(!pilaRutas.puedeAtras());
+        btnAdelante.setDisable(!pilaRutas.puedeAdelante());
+    }
+
+    /** Navega a un módulo del shell (botón de la barra lateral). */
+    public void navegarAModulo(String idModulo) {
+        navegarA(RUTA_MODULO + idModulo);
+    }
+
+    /** Navega al detalle de un producto (clic en una tarjeta del catálogo). */
+    public void abrirDetalle(String productoId) {
+        navegarA(RUTA_DETALLE + productoId);
+    }
+
+    private void navegarA(String ruta) {
+        if (ruta.equals(pilaRutas.actual())) {
+            return;
+        }
+        pilaRutas.visitar(ruta);
+        renderizar(ruta);
+        actualizarBotonesRuta();
+    }
+
+    /** Pinta la ruta dada y sincroniza el resaltado de la barra lateral. */
+    private void renderizar(String ruta) {
+        if (ruta.startsWith(RUTA_DETALLE)) {
+            String productoId = ruta.substring(RUTA_DETALLE.length());
+            etiquetaRuta.setText("");
+            marcarModuloActivo(null);
+            contenido.getChildren().setAll(new VistaDetalleProducto(app, productoId,
+                    (tipo, mensaje) -> Avisos.mostrar(capaAvisos, tipo, mensaje),
+                    this::actualizarBadgeCarrito).getRaiz());
+            return;
+        }
+
+        String idModulo = ruta.substring(RUTA_MODULO.length());
+        pestanasDelRol.stream()
+                .filter(p -> p.id().equals(idModulo))
+                .findFirst()
+                .ifPresentOrElse(
+                        pestana -> etiquetaRuta.setText(pestana.titulo()),
+                        () -> etiquetaRuta.setText(""));
+        marcarModuloActivo(idModulo);
+        contenido.getChildren().setAll(obtenerVista(idModulo));
+    }
+
+    private void marcarModuloActivo(String idModulo) {
+        botonesPestana.forEach((id, boton) ->
+                boton.getStyleClass().remove("nav-boton-activa"));
+        if (idModulo != null && botonesPestana.containsKey(idModulo)) {
+            botonesPestana.get(idModulo).getStyleClass().add("nav-boton-activa");
+        }
+    }
+
+    /**
+     * Construye la vista de un módulo. El catálogo se cachea (conserva sus
+     * filtros); carrito, deseos y pedidos se reconstruyen en cada visita para
+     * mostrar siempre datos frescos.
+     */
+    private Node obtenerVista(String idModulo) {
+        if ("catalogo".equals(idModulo)) {
+            return vistasConstruidas.computeIfAbsent(idModulo, id -> {
+                VistaCatalogo vista = new VistaCatalogo(app,
+                        mensaje -> Avisos.mostrar(capaAvisos, Avisos.Tipo.INFO, mensaje),
+                        this::abrirDetalle);
+                return vista.getRaiz();
+            });
+        }
+        if ("carrito".equals(idModulo)) {
+            return new VistaCarrito(app,
+                    (tipo, mensaje) -> Avisos.mostrar(capaAvisos, tipo, mensaje),
+                    this::actualizarBadgeCarrito,
+                    () -> navegarAModulo("catalogo")).getRaiz();
+        }
+        if ("deseos".equals(idModulo)) {
+            return new VistaDeseos(app,
+                    (tipo, mensaje) -> Avisos.mostrar(capaAvisos, tipo, mensaje),
+                    this::actualizarBadgeCarrito,
+                    this::abrirDetalle).getRaiz();
+        }
+        if ("pedidos".equals(idModulo)) {
+            return new VistaPedidos(app,
+                    (tipo, mensaje) -> Avisos.mostrar(capaAvisos, tipo, mensaje)).getRaiz();
+        }
+        DatosModulo datos = MODULOS_PRONTOS.get(idModulo);
+        if (datos == null) {
+            return new Label("Módulo no disponible");
+        }
+        return new VistaProximamente(ICONOS_POR_PESTANA.get(idModulo), datos.titulo(),
+                datos.descripcion(), datos.puntos()).getRaiz();
     }
 }

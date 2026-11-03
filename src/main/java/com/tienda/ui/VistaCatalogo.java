@@ -38,6 +38,8 @@ public class VistaCatalogo {
 
     private final GestorEscenas app;
     private final Consumer<String> avisador;
+    /** Abre el detalle de un producto (lo inyecta el shell con su pila de navegación). */
+    private final Consumer<String> alAbrirDetalle;
     private final VBox raiz = new VBox(14);
     private final FlowPane cuadricula = new FlowPane(14, 14);
     private final TextField campoBusqueda = new TextField();
@@ -51,9 +53,10 @@ public class VistaCatalogo {
     private List<Categoria> categoriasDisponibles = List.of();
     private int paginaActual = 1;
 
-    public VistaCatalogo(GestorEscenas app, Consumer<String> avisador) {
+    public VistaCatalogo(GestorEscenas app, Consumer<String> avisador, Consumer<String> alAbrirDetalle) {
         this.app = app;
         this.avisador = avisador;
+        this.alAbrirDetalle = alAbrirDetalle;
         construir();
         aplicarFiltros(true);
     }
@@ -217,7 +220,7 @@ public class VistaCatalogo {
         for (Producto producto : pagina.elementos()) {
             String nombreCategoria = app.getServicioProductos().nombreCategoria(producto.getCategoriaId());
             cuadricula.getChildren().add(new VistaTarjetaProducto(producto, nombreCategoria, () ->
-                    avisador.accept("El detalle de producto llega en el próximo hito")));
+                    alAbrirDetalle.accept(producto.getId())));
         }
     }
 
